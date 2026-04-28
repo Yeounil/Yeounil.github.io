@@ -1,0 +1,72 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  year: string;
+  role: string;
+  summary: string;
+  headlineMetric?: string;
+  stack: string[];
+  github?: string;
+  githubBackend?: string;
+  githubFrontend?: string;
+}
+
+const {
+  title,
+  year,
+  role,
+  summary,
+  headlineMetric,
+  stack,
+  github,
+  githubBackend,
+  githubFrontend,
+} = Astro.props;
+
+const pageTitle = `${title} · 정승일`;
+---
+<BaseLayout title={pageTitle} description={summary} pageClass="project-page">
+
+  <header data-reveal>
+    <a class="back" href="/">← 정승일 portfolio</a>
+    <h1>{title}</h1>
+    <p class="project-meta">{year} · {role}</p>
+    {headlineMetric && <p class="project-headline">{headlineMetric}</p>}
+    <p class="stack">
+      <span class="stack-label">Stack</span>
+      {stack.map((s) => <code>{s}</code>)}
+    </p>
+  </header>
+
+  <hr />
+
+  <article class="prose" data-reveal>
+    <slot />
+  </article>
+
+  <hr />
+
+  <section data-reveal>
+    <p class="eyebrow">Repository</p>
+    <p class="links-block">
+      {github && <a href={github}>GitHub</a>}
+      {githubBackend && <a href={githubBackend}>Backend</a>}
+      {githubFrontend && <> · <a href={githubFrontend}>Frontend</a></>}
+      {!github && !githubBackend && !githubFrontend && '저장소 비공개 또는 개인 보관'}
+    </p>
+  </section>
+
+  <footer>
+    <p>
+      <a href="/">← 모든 프로젝트 보기</a>
+    </p>
+    <p>
+      <a href="mailto:seth000123@gmail.com">seth000123@gmail.com</a> ·
+      <a href="https://github.com/Yeounil">github.com/Yeounil</a>
+    </p>
+    <p>© 2026 정승일</p>
+  </footer>
+
+</BaseLayout>

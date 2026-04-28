@@ -1,0 +1,85 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  pageClass?: string;
+}
+
+const {
+  title,
+  description = "정승일 — 시스템 SW · AI 풀스택 개발자. 시스템 레벨에서 문제를 분해하고 아키텍처를 설계합니다.",
+  pageClass,
+} = Astro.props;
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yeounil.github.io/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
+  <link
+    rel="stylesheet"
+    crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+  />
+</head>
+<body class={pageClass}>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <main>
+    <slot />
+  </main>
+
+  <script>
+    // Reading progress + scroll reveal — vanilla, ~1KB
+    (() => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Scroll reveal
+      if (!reduce && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          }
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+      } else {
+        // No-motion users see content as-is
+        document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('is-visible'));
+      }
+
+      // Reading progress
+      const bar = document.getElementById('progress');
+      if (bar) {
+        let ticking = false;
+        const update = () => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          bar.style.width = pct + '%';
+          ticking = false;
+        };
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+          }
+        }, { passive: true });
+        update();
+      }
+    })();
+  </script>
+</body>
+</html>
