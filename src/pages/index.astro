@@ -154,12 +154,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <span class="meta">2025 · 네트워크 프로그래밍 · 1인</span>
       <p>
         Linux 환경에서 C 언어로 소켓 기반 다중 클라이언트 채팅 서버를 직접 구현.
-        외부 라이브러리 없이 JSON 파서까지 자체 제작. Process 동시 접근 제어 및
-        Mutex 기반 임계영역 보호, Thread 핸들링으로 다중 클라이언트 동시 처리.
+        HTTP 정적 서빙과 WebSocket(RFC 6455) 핸드셰이크·프레임 마스킹·가변 길이
+        페이로드까지 프로토콜 레이어를 직접 작성(OpenSSL은 SHA1/Base64에만 사용).
+        초기 thread-per-client + mutex 모델에서 dangling fd / use-after-free
+        문제를 겪은 뒤, 단일 스레드 epoll edge-triggered reactor + non-blocking
+        I/O로 재설계해 공유 상태에 락 없이 동시성 문제를 구조적으로 해소.
       </p>
       <p class="stack">
         <span class="stack-label">Stack</span>
-        <code>C</code><code>POSIX Sockets</code><code>pthread</code><code>Epoll</code>
+        <code>C</code><code>POSIX Sockets</code><code>epoll (ET)</code><code>WebSocket</code><code>OpenSSL</code>
       </p>
       <p class="links">
         <a href="/projects/network-chat-server/">자세히 →</a> ·

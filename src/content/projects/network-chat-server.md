@@ -2,12 +2,13 @@
 title: 실시간 채팅 서버
 year: "2025"
 role: 네트워크 프로그래밍 · 1인
-summary: C 언어로 소켓 기반 다중 클라이언트 채팅 서버 구현. JSON 파서까지 외부 라이브러리 없이 자체 제작.
+summary: C 언어로 소켓 기반 다중 클라이언트 채팅 서버 구현. HTTP 정적 서빙과 WebSocket(RFC 6455) 프로토콜을 직접 작성하고, 단일 스레드 epoll reactor 모델로 재설계해 락 없이 동시성을 해결.
 stack:
   - C
   - POSIX Sockets
-  - pthread
-  - Epoll
+  - epoll (ET)
+  - WebSocket
+  - OpenSSL
 github: https://github.com/Yeounil/Network_project
 order: 5
 ---
