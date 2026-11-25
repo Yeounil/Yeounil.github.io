@@ -1,0 +1,193 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { projects: CollectionEntry<'projects'>[] }
+const { projects } = Astro.props;
+const selected = projects.flatMap(({ id, data }) =>
+  data.featured ? [{ id, ...data.featured, role: data.role, result: data.result }] : []
+).sort((a, b) => a.order - b.order);
+const directionButtons = [
+  { key: 'ArrowLeft', symbol: '←', label: '왼쪽으로' },
+  { key: 'ArrowUp', symbol: '↑', label: '위로' },
+  { key: 'ArrowDown', symbol: '↓', label: '아래로' },
+  { key: 'ArrowRight', symbol: '→', label: '오른쪽으로' },
+];
+const bars = Array.from({length: 65}, (_, i) => {
+  const envelope = (center: number, width: number) => Math.exp(-(((i-center)/width)**2));
+  return 6 + (68*envelope(18,9) + 97*envelope(41,8) + 22*envelope(56,4)) * (.34 + .66*Math.abs(Math.sin(i*.78)));
+});
+---
+<section class="work shell" id="work" aria-labelledby="work-title">
+  <div id="workspace-projects" class="work-heading">
+    <h2 id="work-title" lang="en">Selected <em>work.</em></h2>
+    <a href="#archive" class="archive-link" data-archive-link>전체 프로젝트 <span aria-hidden="true">↓</span></a>
+  </div>
+  <div class="workbench-stage" data-stage>
+    {selected.map((project) => (
+      <article class={'work-module ' + project.art} data-module>
+        <button class="module-grip" type="button" data-grip hidden
+          aria-label={project.title + ' 카드 이동'} aria-describedby="workbench-help"
+          aria-expanded="false" aria-controls={`move-${project.id}`}><span aria-hidden="true">⠿</span></button>
+        <div class="module-controls" id={`move-${project.id}`} data-move-controls
+          role="group" aria-label={project.title + ' 카드 이동 방향'} hidden>
+          {directionButtons.map(({ key, symbol, label }) => (
+            <button type="button" data-move={key} aria-label={label}><span aria-hidden="true">{symbol}</span></button>
+          ))}
+        </div>
+        <a href={`/projects/${project.id}/`} draggable="false">
+          <div class="module-art" aria-hidden="true">
+            {project.art === 'tiles' && <div class="tile-plane">{Array.from({length: 81}, (_, i) => <i style={`--diagonal:${Math.floor(i/9)+i%9}`}></i>)}</div>}
+            {project.art === 'network' && <div class="network-mark">{Array.from({length: 21}, (_, i) => <i style={`--turn:${i*8.57}deg`}></i>)}</div>}
+            {project.art === 'voice' && <div class="voice-bars">{bars.map(height => <i style={`height:${height}%`}></i>)}</div>}
+          </div>
+          <div class="card-copy">
+            <span class="stack">{project.stack}</span>
+            <h3>{project.title}<span aria-hidden="true">↗</span></h3>
+            <p>{project.caption}</p>
+            <p class="card-role">{project.role}</p>
+            <p class="card-result"><strong>{project.result.value}</strong>{project.result.context && <span>{project.result.context}</span>}</p>
+          </div>
+        </a>
+      </article>
+    ))}
+  </div>
+  <div class="desk-tools"><p id="workbench-help" hidden>카드 손잡이를 누르거나 드래그하거나 방향키로 옮길 수 있습니다.</p>
+    <button type="button" data-reset hidden>배치 초기화 ↺</button>
+  </div>
+  <p class="sr-only" data-status aria-live="polite"></p>
+  <details id="archive">
+    <summary>프로젝트 아카이브 <span>{projects.length}개</span></summary>
+    <ul>{projects.map(project => (
+      <li><a href={`/projects/${project.id}/`}><span class="stack">{project.data.year}</span>{project.data.title}<span aria-hidden="true">↗</span></a></li>
+    ))}</ul>
+  </details>
+</section>
+<script>
+  const archive = document.querySelector<HTMLDetailsElement>('#archive');
+  const openArchive = () => { if (archive) archive.open = true; };
+  document.querySelector('[data-archive-link]')?.addEventListener('click', openArchive);
+  const openLinkedArchive = () => { if (location.hash === '#archive') openArchive(); };
+  openLinkedArchive();
+  window.addEventListener('hashchange', openLinkedArchive);
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const reset = document.querySelector<HTMLButtonElement>('[data-reset]');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  const help = document.querySelector<HTMLElement>('#workbench-help');
+
+  if (stage && reset && status) {
+    const cards = [...stage.querySelectorAll<HTMLElement>('[data-module]')];
+    const positions = new Map<HTMLElement, { x: number; y: number }>();
+    const layer = new Map(cards.map((card, index) => [card, index]));
+    const clamp = (value: number, low: number, high: number) => Math.min(Math.max(value, low), high);
+    const positionOf = (card: HTMLElement) => positions.get(card) ?? { x: 0, y: 0 };
+    const directions: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+
+    function move(card: HTMLElement, x: number, y: number) {
+      if (!stage) return;
+      const bounds = stage.getBoundingClientRect();
+      const rect = card.getBoundingClientRect();
+      const previous = positionOf(card);
+      const left = rect.left - bounds.left - previous.x;
+      const top = rect.top - bounds.top - previous.y;
+      const next = {
+        x: clamp(x, -left, bounds.width - left - rect.width),
+        y: clamp(y, -top, bounds.height - top - rect.height),
+      };
+      positions.set(card, next);
+      card.style.setProperty('--drag-x', `${next.x}px`);
+      card.style.setProperty('--drag-y', `${next.y}px`);
+    }
+
+    function raise(card: HTMLElement) {
+      layer.delete(card);
+      layer.set(card, 0);
+      [...layer.keys()].forEach((item, index) => item.style.zIndex = String(index + 1));
+    }
+
+    cards.forEach((card) => {
+      const grip = card.querySelector<HTMLButtonElement>('[data-grip]');
+      const controls = card.querySelector<HTMLElement>('[data-move-controls]');
+      if (!grip || !controls) return;
+      grip.hidden = false;
+      let drag: { id: number; x: number; y: number; offsetX: number; offsetY: number } | undefined;
+      let dragged = false;
+      const setControls = (open: boolean) => {
+        controls.hidden = !open;
+        grip.setAttribute('aria-expanded', String(open));
+      };
+      const announcePosition = () => {
+        const { x, y } = positionOf(card);
+        if (status) status.textContent = `${card.querySelector('h3')?.firstChild?.textContent?.trim()} 이동 위치 ${Math.round(x)}, ${Math.round(y)}`;
+      };
+      const nudge = (direction: [number, number], step: number) => {
+        const { x, y } = positionOf(card);
+        raise(card);
+        move(card, x + direction[0] * step, y + direction[1] * step);
+        announcePosition();
+      };
+      card.addEventListener('focusin', () => raise(card));
+      card.addEventListener('focusout', (event) => {
+        if (!card.contains(event.relatedTarget as Node | null)) setControls(false);
+      });
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !controls.hidden) {
+          setControls(false);
+          grip.focus();
+        }
+      });
+
+      grip.addEventListener('pointerdown', (event) => {
+        if (!event.isPrimary || event.button !== 0) return;
+        dragged = false;
+        const origin = positionOf(card);
+        drag = { id: event.pointerId, x: event.clientX, y: event.clientY, offsetX: origin.x, offsetY: origin.y };
+        grip.setPointerCapture(event.pointerId);
+        raise(card);
+      });
+      grip.addEventListener('pointermove', (event) => {
+        if (drag?.id !== event.pointerId) return;
+        const dx = event.clientX - drag.x;
+        const dy = event.clientY - drag.y;
+        if (!dragged && Math.hypot(dx, dy) < 5) return;
+        dragged = true;
+        setControls(false);
+        card.dataset.dragging = '';
+        move(card, drag.offsetX + dx, drag.offsetY + dy);
+      });
+      grip.addEventListener('lostpointercapture', () => {
+        drag = undefined;
+        delete card.dataset.dragging;
+        if (dragged) announcePosition();
+      });
+      grip.addEventListener('click', (event) => {
+        if (event.detail === 0 || !dragged) setControls(controls.hidden);
+      });
+      grip.addEventListener('keydown', (event) => {
+        const direction = directions[event.key];
+        if (!direction) return;
+        event.preventDefault();
+        nudge(direction, event.shiftKey ? 32 : 12);
+      });
+      controls.querySelectorAll<HTMLButtonElement>('[data-move]').forEach((button) => {
+        button.addEventListener('click', () => nudge(directions[button.dataset.move!], 24));
+      });
+    });
+
+    reset.hidden = false;
+    if (help) help.hidden = false;
+    reset.addEventListener('click', () => {
+      positions.clear();
+      layer.clear();
+      cards.forEach((card, index) => {
+        card.style.removeProperty('--drag-x');
+        card.style.removeProperty('--drag-y');
+        card.style.removeProperty('z-index');
+        layer.set(card, index);
+      });
+      status.textContent = '프로젝트 카드를 처음 위치로 되돌렸습니다.';
+    });
+
+    new ResizeObserver(() => {
+      for (const [card, { x, y }] of positions) move(card, x, y);
+    }).observe(stage);
+  }
+</script>

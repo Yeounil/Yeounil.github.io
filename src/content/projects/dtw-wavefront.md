@@ -2,8 +2,17 @@
 title: DTW 기반 K-Medoids 병렬화
 year: "2025"
 role: 병렬처리 프로그래밍 · 팀장
-summary: OpenMP Wavefront 병렬화로 보행자 궤적 군집화 가속. 10× 데이터셋에서 5.51× speedup, 암달의 법칙 이론치 초과.
-headlineMetric: "8 threads · 10× 데이터셋에서 DTW 5.51× / K-Medoids 5.13× speedup (암달 이론치 4.71× 초과)"
+summary: 보행자 궤적 군집화에서 병목인 DTW 거리 계산을 OpenMP Wavefront로 병렬화했습니다.
+featured:
+  title: DTW Wavefront
+  caption: 보행자 궤적 군집화의 병렬 처리
+  stack: C++ / OpenMP
+  art: tiles
+  order: 1
+result:
+  value: DTW 5.51× 가속
+  context: 8스레드 · 10× 데이터셋
+  comparison: 같은 조건에서 K-Medoids 5.13× 가속 · 암달 이론치 4.71×
 stack:
   - C++
   - OpenMP
@@ -54,11 +63,20 @@ Windows: `CreateFileMapping`, Linux: `mmap`로 큰 데이터셋 메모리 매핑
 
 ## Result
 
-| 규모 | Serial | 4-Thread | 8-Thread |
-|------|--------|----------|----------|
-| 1× | 11.79ms | 1.61× | 1.93× |
-| 5× | 5,966ms | **3.08×** | **4.18×** |
-| 10× | 104,573ms | 2.71× | **5.51×** |
+<p class="benchmark-hint">표를 좌우로 스크롤할 수 있습니다.</p>
+<div class="benchmark-scroll" role="region" aria-label="DTW 벤치마크 표" tabindex="0">
+  <table>
+    <caption>DTW 실행 시간 및 직렬 대비 가속비</caption>
+    <thead>
+      <tr><th scope="col">규모</th><th scope="col">직렬 시간 (ms)</th><th scope="col">4스레드 가속비</th><th scope="col">8스레드 가속비</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">1×</th><td>11.79</td><td>1.61×</td><td>1.93×</td></tr>
+      <tr><th scope="row">5×</th><td>5,966</td><td><strong>3.08×</strong></td><td><strong>4.18×</strong></td></tr>
+      <tr><th scope="row">10×</th><td>104,573</td><td>2.71×</td><td><strong>5.51×</strong></td></tr>
+    </tbody>
+  </table>
+</div>
 
 8 threads · 10× 데이터셋에서 DTW 5.51× / K-Medoids 5.13× speedup. **암달의 법칙 이론치(4.71×) 초과 달성** — 기존 수치는 병렬화 가능 비율을 90%로 계산한 값인데, 실제로는 데이터 사이즈가 커질수록 병렬 처리 가능 구간 비율이 증가했기 때문.
 

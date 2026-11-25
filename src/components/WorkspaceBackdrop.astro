@@ -1,0 +1,64 @@
+<portfolio-backdrop aria-hidden="true">
+  <canvas class="gradient-ascii-canvas"></canvas>
+</portfolio-backdrop>
+
+<script>
+  import { mountGradientASCII } from './gradient-ascii.js';
+
+  class PortfolioBackdrop extends HTMLElement {
+    private dispose?: () => void;
+
+    connectedCallback() {
+      const canvas = this.querySelector('canvas');
+      if (!canvas) return;
+
+      this.dispose = mountGradientASCII(this, canvas, {
+        colors: ['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8'],
+        shape: 'horizon',
+        characters: ' =+xX0S8#@',
+        cellSize: 18,
+        density: 0.8,
+        glyphOpacity: 0.85,
+        gradientOpacity: 0.9,
+        glow: 0.2,
+        depthOfField: 0,
+        flicker: 0.2,
+        softness: 0.5,
+        scale: 1,
+        flow: 0.5,
+        speed: 1,
+        grain: 0.08,
+        variation: 0,
+        mouseInteraction: true,
+        scrambleRadius: 0.1,
+        clickEffect: 'wave',
+        intro: true,
+        lightMode: false,
+      });
+    }
+
+    disconnectedCallback() {
+      this.dispose?.();
+      this.dispose = undefined;
+    }
+  }
+
+  if (!customElements.get('portfolio-backdrop')) customElements.define('portfolio-backdrop', PortfolioBackdrop);
+</script>
+
+<style>
+  portfolio-backdrop {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .gradient-ascii-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>

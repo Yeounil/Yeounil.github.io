@@ -6,67 +6,73 @@ interface Props {
   year: string;
   role: string;
   summary: string;
-  headlineMetric?: string;
+  result: { value: string; context?: string; comparison?: string };
   stack: string[];
   github?: string;
   githubBackend?: string;
   githubFrontend?: string;
+  headings: { depth: number; slug: string; text: string }[];
 }
 
-const {
-  title,
-  year,
-  role,
-  summary,
-  headlineMetric,
-  stack,
-  github,
-  githubBackend,
-  githubFrontend,
-} = Astro.props;
-
-const pageTitle = `${title} · 정승일`;
+const { title, year, role, summary, result, stack, github, githubBackend, githubFrontend, headings } = Astro.props;
+const sections = headings.filter(({ depth }) => depth === 2);
 ---
-<BaseLayout title={pageTitle} description={summary} pageClass="project-page">
 
-  <header data-reveal>
-    <a class="back" href="/">← 정승일 portfolio</a>
-    <h1>{title}</h1>
-    <p class="project-meta">{year} · {role}</p>
-    {headlineMetric && <p class="project-headline">{headlineMetric}</p>}
-    <p class="stack">
-      <span class="stack-label">Stack</span>
-      {stack.map((s) => <code>{s}</code>)}
+<BaseLayout title={`${title} · 정승일`} description={summary}>
+  <header class="case-hero shell">
+    <a class="text-link" href="/#archive">모든 프로젝트</a>
+    <div class="case-heading">
+      <p class="label">{year} / {role}</p>
+      <h1>{title}</h1>
+      <p class="case-summary">{summary}</p>
+    </div>
+    <p class="case-metric">
+      <strong>{result.value}</strong>
+      {result.context && <span>{result.context}</span>}
+      {result.comparison && <span class="case-comparison">{result.comparison}</span>}
     </p>
   </header>
 
-  <hr />
-
-  <article class="prose" data-reveal>
-    <slot />
-  </article>
-
-  <hr />
-
-  <section data-reveal>
-    <p class="eyebrow">Repository</p>
-    <p class="links-block">
-      {github && <a href={github}>GitHub</a>}
-      {githubBackend && <a href={githubBackend}>Backend</a>}
-      {githubFrontend && <> · <a href={githubFrontend}>Frontend</a></>}
-      {!github && !githubBackend && !githubFrontend && '저장소 비공개 또는 개인 보관'}
-    </p>
-  </section>
-
-  <footer>
-    <p>
-      <a href="/">← 모든 프로젝트 보기</a>
-    </p>
-    <p>
-      <a href="mailto:seth000123@gmail.com">seth000123@gmail.com</a> ·
-      <a href="https://github.com/Yeounil">github.com/Yeounil</a>
-    </p>
-    <p>© 2026 정승일</p>
-  </footer>
-
+  <div class="case-body shell">
+    <aside class="case-sidebar" aria-label="프로젝트 정보">
+      <details data-case-details>
+        <summary>프로젝트 정보 · 목차</summary>
+        <div class="case-sidebar-content">
+          {sections.length > 0 && (
+            <nav aria-label="이 페이지의 목차">
+              <p class="label">목차</p>
+              <ul>{sections.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}</ul>
+            </nav>
+          )}
+          <div class="case-stack">
+            <p class="label">기술 스택</p>
+            <ul>{stack.map((technology) => <li>{technology}</li>)}</ul>
+          </div>
+          {(github || githubBackend || githubFrontend) && (
+            <div class="case-repos">
+              <p class="label">저장소</p>
+              {github && <a href={github}>GitHub</a>}
+              {githubBackend && <a href={githubBackend}>Backend</a>}
+              {githubFrontend && <a href={githubFrontend}>Frontend</a>}
+            </div>
+          )}
+        </div>
+      </details>
+    </aside>
+    <article class="prose">
+      <slot />
+    </article>
+  </div>
 </BaseLayout>
+<script>
+  const details = document.querySelector<HTMLDetailsElement>('[data-case-details]');
+  if (details) {
+    const mobile = matchMedia('(max-width: 800px)');
+    const sync = () => {
+      details.open = !mobile.matches;
+      details.toggleAttribute('data-desktop', !mobile.matches);
+    };
+    sync();
+    mobile.addEventListener('change', sync);
+  }
+</script>

@@ -1,8 +1,16 @@
 ---
 title: I-eum
 year: "2025"
-role: 졸업설계 · 팀장 · 4개 모듈 단독 제작
-summary: 시각장애인용 AI 음성 비서. 4-Layer 시스템(Sensory · Routing · Action · Browser) 단독 설계·구현.
+role: 졸업설계 · 팀장
+summary: 이미지와 동적 웹페이지를 탐색하기 어려운 시각장애인 사용자를 위해 음성으로 웹을 탐색하는 비서를 만들었습니다.
+featured:
+  title: I-eum
+  caption: 시각장애인을 위한 AI 음성 비서
+  stack: Python / Speech AI
+  art: voice
+  order: 3
+result:
+  value: 4개 레이어 단독 설계·구현
 stack:
   - Python
   - Faster-Whisper
@@ -27,12 +35,15 @@ order: 2
 
 ### 4-Layer 시스템
 
-4개 레이어 모두 단독으로 설계·구현했다.
-
-- **Sensory Layer** — Faster-Whisper(STT) + Melo-TTS(TTS). 음성 입출력 담당
-- **Routing Layer** — L0~L2 의도 분류. 사용자 발화를 적절한 도구로 라우팅
-- **Action Layer** — 5개 도구(검색, 요약, 페이지 탐색, 양식 입력, 외부 호출)
-- **Browser Layer** — 두 개의 브라우저 전략을 사이트 특성에 따라 스위칭
+<figure class="case-structure">
+  <figcaption>음성 요청 처리의 개념 흐름</figcaption>
+  <ol class="structure-list">
+    <li><strong>Sensory</strong><span>Faster-Whisper로 발화를 인식하고 Melo-TTS로 응답을 읽습니다.</span></li>
+    <li><strong>Routing</strong><span>L0~L2 의도 분류로 요청을 적절한 도구에 연결합니다.</span></li>
+    <li><strong>Action</strong><span>검색, 요약, 페이지 탐색, 양식 입력, 외부 호출을 처리합니다.</span></li>
+    <li><strong>Browser</strong><span>사이트 특성에 따라 두 가지 브라우저 전략을 선택합니다.</span></li>
+  </ol>
+</figure>
 
 ### Browser Strategy — 핵심 트레이드오프
 

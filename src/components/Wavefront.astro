@@ -1,0 +1,54 @@
+---
+const size = 8;
+const active = 7;
+const cells = Array.from({ length: size ** 2 }, (_, index) => {
+  const diagonal = Math.floor(index / size) + index % size;
+  return diagonal === active ? 'active' : diagonal < active ? 'done' : 'pending';
+});
+---
+
+<figure class="wavefront">
+  <figcaption><strong>DTW Wavefront</strong><span>OpenMP</span></figcaption>
+  <div class="matrix" aria-hidden="true">
+    {cells.map((state) => <span class={state}></span>)}
+  </div>
+  <p>같은 반대각선의 셀을 병렬로 계산합니다.</p>
+</figure>
+
+<style>
+  .wavefront {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin: 0;
+    padding: clamp(1.4rem, 3vw, 2.4rem);
+    background: var(--accent);
+    color: var(--ink);
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: .4rem 1rem;
+    font-family: var(--mono);
+    font-size: .875rem;
+  }
+  figcaption span { border: 1px solid currentColor; padding: .125rem .45rem; }
+  .matrix {
+    width: min(100%, 16.5rem);
+    aspect-ratio: 1;
+    align-self: center;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: .27rem;
+    transform: scale(.94);
+    transition: transform 250ms ease;
+  }
+  .wavefront:hover .matrix { transform: scale(1); }
+  .matrix span { border: 1px solid rgb(31 29 27 / .38); }
+  .matrix .done { background: rgb(31 29 27 / .2); }
+  .matrix .active { background: var(--paper); border-color: var(--paper); }
+  p { font-size: .9rem; margin: 0; }
+</style>

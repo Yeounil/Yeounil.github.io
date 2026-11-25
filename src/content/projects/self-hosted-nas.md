@@ -2,7 +2,10 @@
 title: Self-hosted NAS
 year: "2021"
 role: 사이드 프로젝트 · 1인 개발
-summary: 남는 PC에 Ubuntu LTS 올리고 iptables · 포트포워딩 · HTTPS · ownCloud · 관계형 DB까지 단독 구축한 로컬 클라우드.
+summary: 남는 PC로 외부에서 접속할 수 있는 개인 클라우드를 운영하기 위해 네트워크와 파일 동기화 서비스를 직접 구성했습니다.
+result:
+  value: 모바일에서 HTTPS로 파일 접근
+  context: ownCloud 파일 동기화 · SSH 원격 관리 · 인증서 갱신 자동화
 stack:
   - Ubuntu LTS
   - iptables
@@ -38,6 +41,10 @@ order: 6
 
 - Putty/SSH로 원격 관리
 - 외부에서 모바일 앱(ownCloud 클라이언트)으로 접근
+
+## Result
+
+외부 네트워크에서 ownCloud 모바일 앱으로 파일에 접근할 수 있는 개인 클라우드를 구축했습니다. 파일 동기화는 ownCloud, 메타데이터는 MariaDB가 처리하며, SSH로 서버를 관리하고 HTTPS 인증서는 자동으로 갱신하도록 구성했습니다.
 
 ## Insight
 

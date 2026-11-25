@@ -1,0 +1,58 @@
+<portfolio-cursor-grid aria-hidden="true"></portfolio-cursor-grid>
+
+<script>
+  // CursorGrid by David Haz, React Bits, under MIT + Commons Clause.
+  // Source: https://github.com/DavidHDev/react-bits/blob/main/public/r/CursorGrid-JS-CSS.json
+  // See react-bits.LICENSE.md in this directory for the license notice.
+  import { createElement } from 'react';
+  import { createRoot, type Root } from 'react-dom/client';
+  import CursorGrid from './CursorGrid.jsx';
+
+  class PortfolioCursorGrid extends HTMLElement {
+    private root?: Root;
+
+    connectedCallback() {
+      if (this.root) return;
+      this.root = createRoot(this);
+      this.root.render(createElement(CursorGrid, {
+        cellSize: 60,
+        color: '#ffffff',
+        gridColor: undefined,
+        highlight: 'area',
+        gridStyle: 'lines',
+        radius: 140,
+        holdTime: 400,
+        fadeDuration: 800,
+        fillOpacity: 0.06,
+        gridOpacity: 0.08,
+        spotlight: 0.6,
+        clickPulse: true,
+        dpr: undefined,
+        children: undefined,
+        style: undefined,
+      }));
+    }
+
+    disconnectedCallback() {
+      this.root?.unmount();
+      this.root = undefined;
+    }
+  }
+
+  if (!customElements.get('portfolio-cursor-grid')) {
+    customElements.define('portfolio-cursor-grid', PortfolioCursorGrid);
+  }
+</script>
+
+<style>
+  portfolio-cursor-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .42;
+    mask-image: linear-gradient(transparent, black 20%, black 62%, transparent);
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>

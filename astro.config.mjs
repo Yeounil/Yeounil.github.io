@@ -5,5 +5,10 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'auto',
   },
+  vite: {
+    esbuild: {
+      jsx: 'automatic',
+    },
+  },
   compressHTML: true,
 });

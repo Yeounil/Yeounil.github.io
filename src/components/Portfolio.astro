@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectDesk from './ProjectDesk.astro';
+import CursorGridSection from './CursorGridSection.astro';
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout title="정승일 · 시스템 소프트웨어 포트폴리오" description="정승일의 시스템 소프트웨어 포트폴리오. 병렬 처리, 백엔드, AI 프로젝트의 설계와 실험 기록입니다.">
+  <section class="intro" aria-labelledby="intro-title">
+    <CursorGridSection />
+    <div class="hero-copy shell">
+      <p class="eyebrow"><span aria-hidden="true"></span> SYSTEMS SOFTWARE ENGINEER</p>
+      <h1 id="intro-title" lang="en">Systems in <em>Parallel<span>.</span></em></h1>
+      <p class="intro-text">정승일입니다. 병렬 처리와 시스템 소프트웨어를 연구하고,<br class="wide-break" /> 백엔드와 AI 서비스를 만듭니다.</p>
+      <div class="hero-links">
+        <a class="primary-link" href="#work">프로젝트 보기 <span aria-hidden="true">↓</span></a>
+        <a class="github-link" href="https://github.com/Yeounil">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <div class="signal-art" aria-hidden="true"><img src="/art/signal-field.webp" alt="" width="2400" height="540" fetchpriority="high" /></div>
+  </section>
+  <ProjectDesk projects={projects} />
+  <section class="about shell" id="about" aria-labelledby="about-title">
+    <div class="work-heading"><h2 id="about-title" lang="en">About <em>me.</em></h2></div>
+    <div class="about-grid">
+      <div>
+        <p class="about-intro">운영체제, 백엔드, 멀티 에이전트 AI까지 시스템의 각 계층을 공부하고 직접 구현해 왔습니다.</p>
+        <p>학원 사무실 인프라를 설정한 경험에서 출발했습니다. 시스템 설계와 병렬 처리 최적화에 관심이 있으며, RTOS·임베디드 시스템·ROS2도 공부하고 있습니다.</p>
+        <dl class="skills">
+          <dt>시스템·병렬 처리</dt><dd>C, C++, Linux, POSIX 소켓, epoll, OpenMP, CUDA</dd>
+          <dt>로보틱스·임베디드</dt><dd>ROS2, TurtleBot3, SLAM, GPIO</dd>
+          <dt>AI·백엔드</dt><dd>Python, PyTorch, FastAPI, PostgreSQL, Supabase, Docker</dd>
+        </dl>
+      </div>
+      <div class="about-record">
+        <h3>학력과 경험</h3>
+        <p><strong>한국기술교육대학교 컴퓨터공학부</strong><br />2027년 2월 졸업 예정</p>
+        <p>육군 병장 만기 전역 · 2023.08–2025.01</p>
+        <h3>수상과 활동</h3>
+        <ul>
+          <li>2025 충청권 ICT 이노베이션 스퀘어 개발역량 강화 멘토링 아이디어상</li>
+          <li>Microsoft AI 교육 최종 프로젝트 우수상</li>
+          <li>스페셜리스트, BCSD, NURA KARS 동아리 활동</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

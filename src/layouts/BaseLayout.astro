@@ -3,83 +3,53 @@ import '../styles/global.css';
 
 interface Props {
   title: string;
-  description?: string;
-  pageClass?: string;
+  description: string;
 }
 
-const {
-  title,
-  description = "정승일 — 시스템 SW · AI 풀스택 개발자. 시스템 레벨에서 문제를 분해하고 아키텍처를 설계합니다.",
-  pageClass,
-} = Astro.props;
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/^\/workspace\/?$/, '/'), Astro.site).href;
 ---
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light" />
-  <title>{title}</title>
-  <meta name="description" content={description} />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://yeounil.github.io/" />
-  <meta name="twitter:card" content="summary" />
-  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
-  <link
-    rel="stylesheet"
-    crossorigin
-    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
-  />
-</head>
-<body class={pageClass}>
-  <div class="progress" id="progress" aria-hidden="true"></div>
-  <main>
-    <slot />
-  </main>
-
-  <script>
-    // Reading progress + scroll reveal — vanilla, ~1KB
-    (() => {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      // Scroll reveal
-      if (!reduce && 'IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              e.target.classList.add('is-visible');
-              io.unobserve(e.target);
-            }
-          }
-        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-        document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
-      } else {
-        // No-motion users see content as-is
-        document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('is-visible'));
-      }
-
-      // Reading progress
-      const bar = document.getElementById('progress');
-      if (bar) {
-        let ticking = false;
-        const update = () => {
-          const scrollTop = window.scrollY;
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-          bar.style.width = pct + '%';
-          ticking = false;
-        };
-        window.addEventListener('scroll', () => {
-          if (!ticking) {
-            requestAnimationFrame(update);
-            ticking = true;
-          }
-        }, { passive: true });
-        update();
-      }
-    })();
-  </script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href={canonical} />
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+    <header class="site-header shell">
+      <a href="/" class="wordmark"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>정승일</a>
+      <nav aria-label="주 메뉴">
+        <a href="/#work">프로젝트</a>
+        <a href="/#about">소개</a>
+        <a href="/resume.pdf" class="resume-link">이력서 <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer" id="contact">
+      <div class="shell footer-inner">
+        <div>
+          <p class="label">CONTACT</p>
+          <h2>함께 이야기해요.</h2>
+        </div>
+        <div class="footer-links">
+          <a href="mailto:seth000123@gmail.com">seth000123@gmail.com</a>
+          <a href="https://github.com/Yeounil">GitHub</a>
+        </div>
+        <p class="footer-credit">© 2026 정승일</p>
+      </div>
+    </footer>
+  </body>
 </html>

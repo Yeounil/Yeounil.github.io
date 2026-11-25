@@ -2,8 +2,10 @@
 title: GreenWire
 year: "2025"
 role: 2인 협업 · ICT 공모전 출품 · Backend 전담
-summary: AI 금융 뉴스 분석·추천 플랫폼. FastAPI + Supabase + Pinecone 멀티 스토리지, Claude/GPT-5 기반 분석 파이프라인.
-headlineMetric: "2025 충청권 ICT 이노베이션 스퀘어 멘토링 — 아이디어상 수상"
+summary: 금융 뉴스가 종목에 미치는 영향을 독자가 직접 추론해야 하는 문제를 해결하기 위해 AI 분석·추천 플랫폼의 백엔드를 맡았습니다.
+result:
+  value: 아이디어상 수상
+  context: 2025 충청권 ICT 이노베이션 스퀘어 멘토링
 stack:
   - Python
   - FastAPI
@@ -34,10 +36,15 @@ order: 4
 
 뉴스 처리를 단일 흐름이 아니라 4개 독립 파이프라인으로 나눠서 실패 격리와 재시도 단순화.
 
-- **수집** — Event Registry로 Reuters · Bloomberg · WSJ 등 6개 소스, 6시간 주기 자동
-- **AI 분석** — GPT-5로 주가 영향도(0.0~1.0) 자동 평가
-- **번역** — Claude Sonnet 4.5 기반 금융 용어 최적화 한글 번역
-- **임베딩** — 1,536차원 벡터화
+<figure class="case-structure">
+  <figcaption>뉴스 처리 파이프라인 구성</figcaption>
+  <ul class="structure-list" role="list">
+    <li><strong>수집</strong><span>Event Registry로 Reuters · Bloomberg · WSJ 등 6개 출처에서 6시간마다 수집합니다.</span></li>
+    <li><strong>AI 분석</strong><span>GPT-5가 주가 영향도를 0.0~1.0 범위로 평가합니다.</span></li>
+    <li><strong>번역</strong><span>Claude Sonnet 4.5로 금융 용어를 고려해 한글로 번역합니다.</span></li>
+    <li><strong>임베딩</strong><span>1,536차원 벡터로 변환합니다.</span></li>
+  </ul>
+</figure>
 
 ### 멀티 스토리지
 

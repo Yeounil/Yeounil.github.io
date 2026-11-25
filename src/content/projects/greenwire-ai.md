@@ -2,8 +2,17 @@
 title: GreenWire_AI
 year: "2025~"
 role: 1인 개발 · 단독 확장
-summary: Multi-Agent Ensemble 자동매매 시스템. PyTorch 기반 4개 전문 에이전트 + Attention MetaAgent로 한국·미국 시장 동시 운용.
-headlineMetric: "2년 누적 백테스트 +181% / MDD 32% (S&P 500 +70% / MDD 25% 대비 알파 +111%p)"
+summary: 금융 뉴스 추천의 정량 검증 한계를 보완하기 위해 PyTorch 기반 전문 에이전트 4개의 신호를 결합하는 자동매매 시스템으로 확장했습니다.
+featured:
+  title: GreenWire_AI
+  caption: 전문 에이전트 4개의 시장 신호 결합
+  stack: Python / PyTorch
+  art: network
+  order: 2
+result:
+  value: +181%
+  context: 2년 누적 백테스트 · MDD 32%
+  comparison: S&P 500 +70% · MDD 25% · 누적 수익률 차이 +111%p
 stack:
   - Python
   - PyTorch (LSTM/TabNet/MLP/Attention)
@@ -55,7 +64,7 @@ GreenWire(공모전 출품작)는 뉴스 분석·추천까지만 다뤘다. 멘�
 
 ## Result
 
-- **2년 누적 +181% / MDD 32%** vs S&P 500 +70% / MDD 25% — 알파 +111%p
+- **2년 누적 백테스트 +181% / MDD 32%** vs S&P 500 +70% / MDD 25% — 누적 수익률 차이 +111%p
 - 한국투자증권 KIS Open API 연동 → 본인 자산으로 실거래 운용 중
 - Telegram 실시간 알림, APScheduler 24/7 데몬 (KR 15:45 · US 06:15 KST)
 - Docker 단일 커맨드 배포
